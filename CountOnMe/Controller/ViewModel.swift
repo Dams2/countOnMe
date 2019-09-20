@@ -9,53 +9,50 @@
 import Foundation
 
 class ViewModel {
+
+    // MARK: - Private Properties
+
+    private let operators: [String] = ["+", "-", "*", "/", "="]
+    
+    private let operands: [Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     
     // MARK: - Outputs
     
-    var textViewText: ((String) -> Void)?
-    var additionButtonText: ((String) -> Void)?
-    var subtractionButtonText: ((String) -> Void)?
-    var multiplicationButtonText: ((String) -> Void)?
-    var divisionButtonText: ((String) -> Void)?
-    var acButtonText: ((String) -> Void)?
-    var equalButtonText: ((String) -> Void)?
+    var displayedText: ((String) -> Void)?
+    var additionText: ((String) -> Void)?
+    var subtractionText: ((String) -> Void)?
+    var multiplicationText: ((String) -> Void)?
+    var divisionText: ((String) -> Void)?
+    var acText: ((String) -> Void)?
+    var equalText: ((String) -> Void)?
     
     // MARK: - Inputs
     
     func viewDidLoad() {
-        self.textViewText?("")
-        self.additionButtonText?(" + ")
-        self.subtractionButtonText?(" - ")
-        self.multiplicationButtonText?(" x ")
-        self.divisionButtonText?(" ÷ ")
-        self.acButtonText?(" A/C ")
-        self.equalButtonText?(" = ")
+        self.displayedText?("")
+        self.additionText?(" + ")
+        self.subtractionText?(" - ")
+        self.multiplicationText?(" x ")
+        self.divisionText?(" ÷ ")
+        self.acText?(" A/C ")
+        self.equalText?(" = ")
+    }
+
+    func didPressOperator(at index: Int) {
+        guard index < operators.count else { return }
+        let `operator` = operators[index]
+        // les calculs a faires plus tard surement?
+        displayedText?(`operator`)
+    }
+
+    func didPressOperand(with index: Int) {
+        guard index < operands.count else { return }
+        let operand = operands[index]
+        // les calculs a faires plus tard surement?
+        displayedText?(String(operand))
     }
     
-    func didPressNumberButton() {
+    func didPressAc() {
+        self.displayedText?("")
     }
-    
-    func didPressAdditionButton() {
-        self.textViewText?(" + ")
-    }
-    
-    func didPressSubstractionButton() {
-        self.textViewText?(" - ")
-    }
-    
-    func didPressMultiplicationButton() {
-        self.textViewText?(" x ")
-    }
-    
-    func didPressDivisionButton() {
-        self.textViewText?(" ÷ ")
-    }
-    
-    func didPressAcButton() {
-        self.textViewText?("")
-    }
-    
-    func didPressEqualButton() {
-    }
-    
 }

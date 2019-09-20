@@ -11,11 +11,11 @@ import XCTest
 
 final class ViewModelTests: XCTestCase {
     
-    func testGivenAViewModel_WhenViewDidLoad_ThenTextViewText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenViewDidLoad_ThenDisplayedText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Text view text returned")
+        let expectation = self.expectation(description: "Displayed text returned")
         
-        viewModel.textViewText = { text in
+        viewModel.displayedText = { text in
             XCTAssertEqual(text, "")
             expectation.fulfill()
         }
@@ -23,11 +23,11 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGivenAViewModel_WhenViewDidLoad_ThenAdditionButtonText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenViewDidLoad_ThenAdditionText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Addition button text returned")
+        let expectation = self.expectation(description: "Addition text returned")
         
-        viewModel.textViewText = { text in
+        viewModel.additionText = { text in
             XCTAssertEqual(text, " + ")
             expectation.fulfill()
         }
@@ -35,11 +35,11 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGivenAViewModel_WhenViewDidLoad_ThenSubtractionButtonText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenViewDidLoad_ThenSubtractionText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Subtraction button text returned")
+        let expectation = self.expectation(description: "Subtraction text returned")
         
-        viewModel.textViewText = { text in
+        viewModel.subtractionText = { text in
             XCTAssertEqual(text, " - ")
             expectation.fulfill()
         }
@@ -47,11 +47,11 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGivenAViewModel_WhenViewDidLoad_ThenMultiplicationButtonText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenViewDidLoad_ThenMultiplicationText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Multiplication button text returned")
+        let expectation = self.expectation(description: "Multiplication text returned")
         
-        viewModel.textViewText = { text in
+        viewModel.multiplicationText = { text in
             XCTAssertEqual(text, " x ")
             expectation.fulfill()
         }
@@ -59,11 +59,11 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGivenAViewModel_WhenViewDidLoad_ThenDivisionButtonText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenViewDidLoad_ThenDivisionText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Division button text returned")
+        let expectation = self.expectation(description: "Division  text returned")
         
-        viewModel.textViewText = { text in
+        viewModel.divisionText = { text in
             XCTAssertEqual(text, " ÷ ")
             expectation.fulfill()
         }
@@ -71,11 +71,23 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGivenAViewModel_WhenViewDidLoad_ThenEqualButtonText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenViewDidLoad_ThenAcText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Equal button text returned")
+        let expectation = self.expectation(description: "AC text returned")
         
-        viewModel.textViewText = { text in
+        viewModel.acText = { text in
+            XCTAssertEqual(text, " A/C ")
+            expectation.fulfill()
+        }
+        viewModel.viewDidLoad()
+        waitForExpectations(timeout: 1.0, handler: nil)
+    }
+    
+    func testGivenAViewModel_WhenViewDidLoad_ThenEqualText_IsCorrectlyReturned() {
+        let viewModel = ViewModel()
+        let expectation = self.expectation(description: "Equal text returned")
+        
+        viewModel.equalText = { text in
             XCTAssertEqual(text, " = ")
             expectation.fulfill()
         }
@@ -83,5 +95,38 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
+    func testGivenViewModel_WhenDidPressOperatorAtIndex0_ThenDisplayedText_IsCorrectlyReturned() {
+        let viewModel = ViewModel()
+        let expectation = self.expectation(description: "Displayed text returned for index 0")
+        
+        var counter = 0
+        viewModel.displayedText = { text in
+            if counter == 1 {
+                XCTAssertEqual(text, "+")
+                expectation.fulfill()
+            }
+            counter += 1
+        }
+        
+        viewModel.viewDidLoad()
+        viewModel.didPressOperator(at: 0)
+        waitForExpectations(timeout: 1.0, handler: nil)
+    }
+    
+    func testGivenViewModel_WhenDidPressAc_ThenDisplayedText_IsCorrectlyReturned() {
+        let viewModel = ViewModel()
+        let expectation = self.expectation(description: "Displayed text returned")
+        
+        var counter = 0
+        viewModel.displayedText = { text in
+            if counter == 1 {
+                XCTAssertEqual(text, "")
+                expectation.fulfill()
+            }
+            counter += 1
+        }
+        viewModel.viewDidLoad()
+        viewModel.didPressAc()
+        waitForExpectations(timeout: 1.0, handler: nil)
+    }
 }
-

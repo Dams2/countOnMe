@@ -15,12 +15,12 @@ class ViewController: UIViewController {
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var numberButtons: [UIButton]!
 
-    @IBOutlet weak var additionButton: UIButton! 
-    @IBOutlet weak var subtractionButton: UIButton!
-    @IBOutlet weak var multiplicationButton: UIButton!
-    @IBOutlet weak var divisionButton: UIButton!
-    @IBOutlet weak var acButton: UIButton!
-    @IBOutlet weak var equalButton: UIButton!
+    @IBOutlet private weak var additionButton: UIButton!
+    @IBOutlet private weak var subtractionButton: UIButton!
+    @IBOutlet private weak var multiplicationButton: UIButton!
+    @IBOutlet private weak var divisionButton: UIButton!
+    @IBOutlet private weak var acButton: UIButton!
+    @IBOutlet private weak var equalButton: UIButton!
     
     // MARK: - Private properties
     
@@ -57,38 +57,38 @@ class ViewController: UIViewController {
 
     private func bind(to viewModel: ViewModel) {
 
-        viewModel.textViewText = { [weak self] text in
+        viewModel.displayedText = { [weak self] text in
             self?.textView.text = text
         }
 
-        viewModel.additionButtonText = { [weak self] text in
+        viewModel.additionText = { [weak self] text in
             self?.additionButton.setTitle(text, for: .normal)
         }
 
-        viewModel.subtractionButtonText = { [weak self] text in
+        viewModel.subtractionText = { [weak self] text in
             self?.subtractionButton.setTitle(text, for: .normal)
         }
 
-        viewModel.multiplicationButtonText = { [weak self] text in
+        viewModel.multiplicationText = { [weak self] text in
             self?.multiplicationButton.setTitle(text, for: .normal)
         }
 
-        viewModel.divisionButtonText = { [weak self] text in
+        viewModel.divisionText = { [weak self] text in
             self?.divisionButton.setTitle(text, for: .normal)
         }
         
-        viewModel.acButtonText = { [weak self] text in
+        viewModel.acText = { [weak self] text in
             self?.acButton.setTitle(text, for: .normal)
         }
 
-        viewModel.equalButtonText = { [weak self] text in
+        viewModel.equalText = { [weak self] text in
             self?.equalButton.setTitle(text, for: .normal)
         }
     }
 
     // MARK: - Helpers
 
-    func anOperatorIsAlreadyPut() {
+    private func anOperatorIsAlreadyPut() {
         let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
@@ -96,16 +96,14 @@ class ViewController: UIViewController {
 
     // MARK: - Action
 
-    @IBAction func tappedNumberButton(_ sender: UIButton) {
-        guard let numberText = sender.title(for: .normal) else {
-            return
-        }
+    @IBAction private func pressOperand(_ sender: UIButton) {
+        let index = sender.tag
+        viewModel.didPressOperator(at: index)
+    }
 
-        if expressionHaveResult {
-            viewModel.didPressNumberButton()
-        }
-
-        textView.text.append(numberText)
+    @IBAction private func tappedNumberButton(_ sender: UIButton) {
+        let index = sender.tag
+        viewModel.didPressOperand(with: index)
     }
 
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
@@ -120,48 +118,9 @@ class ViewController: UIViewController {
             anOperatorIsAlreadyPut()
         }
     }
-
-    @IBAction func tappedSubstractionButton(_ sender: UIButton) {
-        if canAddOperator {
-            guard let subtractionTitleLabel = subtractionButton.titleLabel?.text else {
-                return
-            }
-            
-            textView.text.append(subtractionTitleLabel)
-            
-        } else {
-            anOperatorIsAlreadyPut()
-        }
-    }
-
-    @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
-        if canAddOperator {
-            guard let multiplicationTitleLabel = multiplicationButton.titleLabel?.text else {
-                return
-            }
-
-            textView.text.append(multiplicationTitleLabel)
-
-        } else {
-            anOperatorIsAlreadyPut()
-        }
-    }
-
-    @IBAction func tappedDivisionButton(_ sender: UIButton) {
-        if canAddOperator {
-            guard let subtractionTitleLabel = subtractionButton.titleLabel?.text else {
-                return
-            }
-
-            textView.text.append(subtractionTitleLabel)
-
-        } else {
-            anOperatorIsAlreadyPut()
-        }
-    }
     
-    @IBAction func tappedAcButton(_ sender: UIButton) {
-        viewModel.didPressAcButton()
+    @IBAction private func tappedAcButton(_ sender: UIButton) {
+        viewModel.didPressAc()
     }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
