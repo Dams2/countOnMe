@@ -14,7 +14,6 @@ class ViewController: UIViewController {
     
     @IBOutlet private weak var textView: UITextView!
     @IBOutlet private var numberButtons: [UIButton]!
-
     @IBOutlet private weak var additionButton: UIButton!
     @IBOutlet private weak var subtractionButton: UIButton!
     @IBOutlet private weak var multiplicationButton: UIButton!
@@ -61,29 +60,29 @@ class ViewController: UIViewController {
             self?.textView.text = text
         }
 
-        viewModel.additionText = { [weak self] text in
-            self?.additionButton.setTitle(text, for: .normal)
-        }
-
-        viewModel.subtractionText = { [weak self] text in
-            self?.subtractionButton.setTitle(text, for: .normal)
-        }
-
-        viewModel.multiplicationText = { [weak self] text in
-            self?.multiplicationButton.setTitle(text, for: .normal)
-        }
-
-        viewModel.divisionText = { [weak self] text in
-            self?.divisionButton.setTitle(text, for: .normal)
-        }
-        
-        viewModel.acText = { [weak self] text in
-            self?.acButton.setTitle(text, for: .normal)
-        }
-
-        viewModel.equalText = { [weak self] text in
-            self?.equalButton.setTitle(text, for: .normal)
-        }
+//        viewModel.additionText = { [weak self] text in
+//            self?.additionButton.setTitle(text, for: .normal)
+//        }
+//
+//        viewModel.subtractionText = { [weak self] text in
+//            self?.subtractionButton.setTitle(text, for: .normal)
+//        }
+//
+//        viewModel.multiplicationText = { [weak self] text in
+//            self?.multiplicationButton.setTitle(text, for: .normal)
+//        }
+//
+//        viewModel.divisionText = { [weak self] text in
+//            self?.divisionButton.setTitle(text, for: .normal)
+//        }
+//        
+//        viewModel.acText = { [weak self] text in
+//            self?.acButton.setTitle(text, for: .normal)
+//        }
+//
+//        viewModel.equalText = { [weak self] text in
+//            self?.equalButton.setTitle(text, for: .normal)
+//        }
     }
 
     // MARK: - Helpers

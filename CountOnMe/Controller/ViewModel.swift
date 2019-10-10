@@ -19,23 +19,25 @@ class ViewModel {
     // MARK: - Outputs
     
     var displayedText: ((String) -> Void)?
-    var additionText: ((String) -> Void)?
-    var subtractionText: ((String) -> Void)?
-    var multiplicationText: ((String) -> Void)?
-    var divisionText: ((String) -> Void)?
-    var acText: ((String) -> Void)?
-    var equalText: ((String) -> Void)?
+    var alertText: ((String) -> Void)?
+//    var additionText: ((String) -> Void)?
+//    var subtractionText: ((String) -> Void)?
+//    var multiplicationText: ((String) -> Void)?
+//    var divisionText: ((String) -> Void)?
+//    var acText: ((String) -> Void)?
+//    var equalText: ((String) -> Void)?
     
     // MARK: - Inputs
     
     func viewDidLoad() {
         self.displayedText?("")
-        self.additionText?(" + ")
-        self.subtractionText?(" - ")
-        self.multiplicationText?(" x ")
-        self.divisionText?(" ÷ ")
-        self.acText?(" A/C ")
-        self.equalText?(" = ")
+        self.alertText?("")
+//        self.additionText?(" + ")
+//        self.subtractionText?(" - ")
+//        self.multiplicationText?(" x ")
+//        self.divisionText?(" ÷ ")
+//        self.acText?(" A/C ")
+//        self.equalText?(" = ")
     }
 
     func didPressOperator(at index: Int) {
