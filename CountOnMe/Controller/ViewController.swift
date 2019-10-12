@@ -59,30 +59,11 @@ class ViewController: UIViewController {
         viewModel.displayedText = { [weak self] text in
             self?.textView.text = text
         }
-
-//        viewModel.additionText = { [weak self] text in
-//            self?.additionButton.setTitle(text, for: .normal)
-//        }
-//
-//        viewModel.subtractionText = { [weak self] text in
-//            self?.subtractionButton.setTitle(text, for: .normal)
-//        }
-//
-//        viewModel.multiplicationText = { [weak self] text in
-//            self?.multiplicationButton.setTitle(text, for: .normal)
-//        }
-//
-//        viewModel.divisionText = { [weak self] text in
-//            self?.divisionButton.setTitle(text, for: .normal)
-//        }
-//        
-//        viewModel.acText = { [weak self] text in
-//            self?.acButton.setTitle(text, for: .normal)
-//        }
-//
-//        viewModel.equalText = { [weak self] text in
-//            self?.equalButton.setTitle(text, for: .normal)
-//        }
+        
+        viewModel.alertText = { [weak self] text in
+            let alert = UIAlertController
+            alert.
+        }
     }
 
     // MARK: - Helpers
