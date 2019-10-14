@@ -8,6 +8,12 @@
 
 import Foundation
 
+struct AlertConfiguration: Equatable {
+    let title: String
+    let message: String
+    let okTitle: String
+}
+
 class ViewModel {
 
     // MARK: - Private Properties
@@ -15,17 +21,32 @@ class ViewModel {
     private let operators: [String] = ["+", "-", "*", "/", "="]
     
     private let operands: [Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    private var temporaryText: String = "" {
+        didSet {
+            let text = temporaryText
+                .split(separator: " ")
+                .map { "\($0)" }
+                .joined()
+            displayedText?(text)
+        }
+    }
     
     // MARK: - Outputs
     
     var displayedText: ((String) -> Void)?
-    var alertText: ((String) -> Void)?
+
+    var navigateTo: ((NextScreen) -> Void)?
+
+    enum NextScreen {
+        case alert(alertConfiguration: AlertConfiguration)
+    }
     
     // MARK: - Inputs
     
     func viewDidLoad() {
         self.displayedText?("")
-        self.alertText?("")
+        
     }
 
     func didPressOperator(at index: Int) {
@@ -33,6 +54,7 @@ class ViewModel {
         let `operator` = operators[index]
         // les calculs a faires plus tard surement?
         displayedText?(`operator`)
+        
     }
 
     func didPressOperand(with index: Int) {
@@ -44,5 +66,14 @@ class ViewModel {
     
     func didPressAc() {
         self.displayedText?("")
+    }
+}
+
+extension ViewModel.NextScreen: Equatable {
+    public static func ==(lhs: ViewModel.NextScreen, rhs: ViewModel.NextScreen) -> Bool {
+        switch (lhs, rhs) {
+        case let (.alert(c1), .alert(c2)):
+            return c1 == c2
+        }
     }
 }

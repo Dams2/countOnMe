@@ -21,6 +21,7 @@ class ViewController: UIViewController {
     @IBOutlet private weak var acButton: UIButton!
     @IBOutlet private weak var equalButton: UIButton!
     
+    @IBOutlet var operators: [UIButton]!
     // MARK: - Private properties
     
     private var elements: [String] {
@@ -55,15 +56,22 @@ class ViewController: UIViewController {
     }
 
     private func bind(to viewModel: ViewModel) {
-
         viewModel.displayedText = { [weak self] text in
             self?.textView.text = text
         }
-        
-        viewModel.alertText = { [weak self] text in
-            let alert = UIAlertController
-            alert.
+
+        viewModel.navigateTo = { [weak self] screen in
+            switch screen {
+            case .alert(alertConfiguration: let configuration):
+                self?.displayAlert(with: configuration)
+            }
         }
+    }
+    
+    private func displayAlert(with configuration: AlertConfiguration) {
+        let alertVC = UIAlertController(title: configuration.title, message: configuration.message, preferredStyle: .alert)
+        alertVC.addAction(UIAlertAction(title: configuration.okTitle, style: .cancel, handler: nil))
+        self.present(alertVC, animated: true, completion: nil)
     }
 
     // MARK: - Helpers
@@ -73,7 +81,8 @@ class ViewController: UIViewController {
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
     }
-
+    
+    
     // MARK: - Action
 
     @IBAction private func pressOperand(_ sender: UIButton) {
