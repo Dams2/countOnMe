@@ -24,26 +24,12 @@ class ViewModel {
 
     private var temporaryText: String = "" {
         didSet {
-            let text = temporaryText
-                .split(separator: " ")
-                .map { "\($0)" }
-                .joined()
-            displayedText?(text)
+            let text = temporaryText.components(separatedBy: .whitespaces)
+            print(text)
+            displayedText?(text.joined(separator: " "))
         }
     }
-    
-    private var expressionHaveEnoughElement: Bool {
-        return temporaryText.count >= 3
-    }
-    
-    private var expressionIsCorrect: Bool {
-        guard let lastCharacter = temporaryText.last else { return false }
-        return !operators.contains(lastCharacter.description)
-    }
-    
-    private var expressionHaveResult: Bool {
-        return temporaryText.firstIndex(of: "=") != nil
-    }
+
     
     // MARK: - Outputs
     
@@ -58,66 +44,69 @@ class ViewModel {
     // MARK: - Inputs
     
     func viewDidLoad() {
-        self.displayedText?("")
+        temporaryText = ""
     }
 
     func didPressOperator(at index: Int) {
         guard index < operators.count else { return }
         let `operator` = operators[index]
-        
-        if `operator` != "=" {
-            if expressionIsCorrect {
-                temporaryText.append(`operator`)
-            } else {
-                navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "", message: "", okTitle: "")))
-            }
+
+        guard let lastCharacter = temporaryText.last else { return }
+        guard !operators.contains(lastCharacter.description) else { return }
+
+        if `operator` == "=" {
+            processCalcul()
         } else {
-             guard expressionIsCorrect else {
-                navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "", message: "", okTitle: "")))
-            }
-            
-            guard expressionHaveEnoughElement else {
-                 navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "", message: "", okTitle: "")))
-            }
-            
-            var operationsToReduce = temporaryText
-            
-            while operationsToReduce.count > 1 {
-                let u = Int(operationsToReduce[operationsToReduce.startIndex].description)
-                let left = Int(operationsToReduce[0])!
-                let operand = operationsToReduce[1]
-                let right = Int(operationsToReduce[2])!
-                
-                let result: Int
-                
-                switch operand {
-                case "+": result = left + right
-                case "-": result = left - right
-                case "*": result = left * right
-                case "/": result = left / right
-                default: fatalError("Unknown operator !")
-                }
-                
-                operationsToReduce = Array(operationsToReduce.dropFirst(3))
-                operationsToReduce.insert("\(result)", at: 0)
-            }
-            temporaryText.append(`operator`)
-            displayedText?(temporaryText)
+            temporaryText += " \(`operator`) "
         }
     }
 
     func didPressOperand(with index: Int) {
         guard index < operands.count else { return }
         let operand = operands[index]
-        if expressionHaveResult {
-            displayedText?("")
-            
-        }
-        displayedText?(String(operand))
+        temporaryText += "\(operand)"
     }
     
     func didPressAc() {
-        self.displayedText?("")
+       temporaryText = ""
+    }
+
+    // MARK: - Private func
+
+    private func processCalcul() {
+
+        var operationsToReduce = temporaryText.components(separatedBy: .whitespaces)
+
+        // Iterate over operations while an operand still here
+        while operationsToReduce.count > 1 {
+
+            guard
+                let firstElement = operationsToReduce.first,
+                let left = Int(firstElement)
+                else { return }
+            
+            let operandIndex = operationsToReduce.index(after: operationsToReduce.firstIndex(of: firstElement.description)!)
+            let operand = operationsToReduce[operandIndex]
+            
+            guard
+                let lastElement = operationsToReduce.last,
+                let right = Int(lastElement)
+                else { return }
+
+            let result: Int
+            switch operand.description {
+            case "+": result = left + right
+            case "-": result = left - right
+            case "x": result = left * right
+            case "÷": result = left / right
+            default: fatalError("Unknown operator !")
+            }
+            
+            operationsToReduce = Array(operationsToReduce.dropFirst(3))
+            operationsToReduce.insert("\(result)", at: 0)
+        }
+
+        temporaryText.append(" = \(operationsToReduce.first!)")
     }
 }
 
