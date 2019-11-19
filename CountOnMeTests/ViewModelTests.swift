@@ -72,7 +72,7 @@ final class ViewModelTests: XCTestCase {
     
     func testGivenAViewModel_WhenPressEqualAfterAnSubtractionWithIndex0_ThenDisplayedText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Addition text returned")
+        let expectation = self.expectation(description: "Subtraction text returned")
         
         var counter = 0
         viewModel.displayedText = { text in
@@ -96,7 +96,7 @@ final class ViewModelTests: XCTestCase {
     
     func testGivenAViewModel_WhenPressEqualAfterAnMultiplicationWithIndex0_ThenDisplayedText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Addition text returned")
+        let expectation = self.expectation(description: "Multiplication text returned")
         
         var counter = 0
         viewModel.displayedText = { text in
@@ -120,7 +120,7 @@ final class ViewModelTests: XCTestCase {
     
     func testGivenAViewModel_WhenPressEqualAfterAnDivisionWithIndex0_ThenDisplayedText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Addition text returned")
+        let expectation = self.expectation(description: "Division text returned")
         let alertExpectation = self.expectation(description: "Returned alert")
         
         var counter = 0
@@ -154,7 +154,7 @@ final class ViewModelTests: XCTestCase {
     
     func testGivenAViewModel_WhenPressEqualAfterAnDivisionWithIndex1_ThenDisplayedText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Addition text returned")
+        let expectation = self.expectation(description: "Division text returned")
         
         var counter = 0
         viewModel.displayedText = { text in

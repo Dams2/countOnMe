@@ -22,8 +22,11 @@ class ViewController: UIViewController {
     @IBOutlet private weak var equalButton: UIButton!
     
     @IBOutlet var operators: [UIButton]!
+    
     // MARK: - Private properties
     
+    private var size: CGFloat = 60
+
     private var elements: [String] {
         return textView.text.split(separator: " ").map { "\($0)" }
     }
@@ -68,20 +71,13 @@ class ViewController: UIViewController {
         }
     }
     
+    // MARK: - Helpers
+
     private func displayAlert(with configuration: AlertConfiguration) {
         let alertVC = UIAlertController(title: configuration.title, message: configuration.message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: configuration.okTitle, style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
     }
-
-    // MARK: - Helpers
-
-    private func anOperatorIsAlreadyPut() {
-        let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
-        alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-        self.present(alertVC, animated: true, completion: nil)
-    }
-    
     
     // MARK: - Action
 
@@ -95,19 +91,6 @@ class ViewController: UIViewController {
         viewModel.didPressOperand(with: index)
     }
 
-    @IBAction func tappedAdditionButton(_ sender: UIButton) {
-        if canAddOperator {
-            guard let additionTitleLabel = additionButton.titleLabel?.text else {
-                return
-            }
-            
-            textView.text.append(additionTitleLabel)
-            
-        } else {
-            anOperatorIsAlreadyPut()
-        }
-    }
-    
     @IBAction private func tappedAcButton(_ sender: UIButton) {
         viewModel.didPressAc()
     }

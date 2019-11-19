@@ -29,7 +29,6 @@ class ViewModel {
             displayedText?(text.joined(separator: " "))
         }
     }
-
     
     // MARK: - Outputs
     
@@ -50,17 +49,24 @@ class ViewModel {
     func didPressOperator(at index: Int) {
         guard index < operators.count else { return }
         let `operator` = operators[index]
-
-        guard let lastCharacter = temporaryText.last else { return }
-        guard !operators.contains(lastCharacter.description) else { return }
-
+    
+        guard let lastCharacter = temporaryText
+            .components(separatedBy: .whitespaces)
+            .joined()
+            .last else { return }
+        
+        if operators.contains(lastCharacter.description) {
+            print("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Un opérateur à déjà été saisi", okTitle: "D'accord")))
+            return
+        }
         if `operator` == "=" {
-            processCalcul()
+            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
         } else {
             temporaryText += " \(`operator`) "
         }
     }
-
+    
     func didPressOperand(with index: Int) {
         guard index < operands.count else { return }
         let operand = operands[index]
@@ -73,19 +79,15 @@ class ViewModel {
 
     // MARK: - Private func
 
-    private func processCalcul() {
-
-        var operationsToReduce = temporaryText.components(separatedBy: .whitespaces)
-
-        // Iterate over operations while an operand still here
-        while operationsToReduce.count > 1 {
+    private func processCalcul(operationsToReduce: [String]) {
 
             guard
                 let firstElement = operationsToReduce.first,
                 let left = Int(firstElement)
                 else { return }
             
-            let operandIndex = operationsToReduce.index(after: operationsToReduce.firstIndex(of: firstElement.description)!)
+            guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstElement.description) else { return }
+            let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
             let operand = operationsToReduce[operandIndex]
             
             guard
@@ -93,20 +95,31 @@ class ViewModel {
                 let right = Int(lastElement)
                 else { return }
 
+        result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
+    }
+    
+    private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
+        
+        var operationsToReduce = operationsToReduce
+        
+        while operationsToReduce.count > 1 {
+
             let result: Int
             switch operand.description {
             case "+": result = left + right
             case "-": result = left - right
-            case "x": result = left * right
-            case "÷": result = left / right
+            case "*": result = left * right
+            case "/": result = left / right
             default: fatalError("Unknown operator !")
             }
-            
             operationsToReduce = Array(operationsToReduce.dropFirst(3))
             operationsToReduce.insert("\(result)", at: 0)
+            
         }
+        
+        guard let operationToReduceFirst = operationsToReduce.first else { return }
+        temporaryText.append(" = \(operationToReduceFirst)")
 
-        temporaryText.append(" = \(operationsToReduce.first!)")
     }
 }
 
