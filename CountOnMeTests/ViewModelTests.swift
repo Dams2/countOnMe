@@ -53,7 +53,7 @@ final class ViewModelTests: XCTestCase {
         var counter = 0
         viewModel.displayedText = { text in
             if counter == 4 {
-                  XCTAssertEqual(text, "0 + 0 = 0")
+                  XCTAssertEqual(text, "0")
                   expectation.fulfill()
             }
             counter += 1
@@ -77,7 +77,7 @@ final class ViewModelTests: XCTestCase {
         var counter = 0
         viewModel.displayedText = { text in
             if counter == 4 {
-                  XCTAssertEqual(text, "0 - 0 = 0")
+                  XCTAssertEqual(text, "0")
                   expectation.fulfill()
             }
             counter += 1
@@ -101,7 +101,7 @@ final class ViewModelTests: XCTestCase {
         var counter = 0
         viewModel.displayedText = { text in
             if counter == 4 {
-                  XCTAssertEqual(text, "0 * 0 = 0")
+                  XCTAssertEqual(text, "0")
                   expectation.fulfill()
             }
             counter += 1
@@ -159,7 +159,7 @@ final class ViewModelTests: XCTestCase {
         var counter = 0
         viewModel.displayedText = { text in
             if counter == 4 {
-                  XCTAssertEqual(text, "1 / 1 = 1")
+                  XCTAssertEqual(text, "1")
                   expectation.fulfill()
             }
             counter += 1
@@ -182,7 +182,7 @@ final class ViewModelTests: XCTestCase {
         var counter = 0
         viewModel.displayedText = { text in
             if counter == 4 {
-                  XCTAssertEqual(text, "0")
+                  XCTAssertEqual(text, "1")
                   expectation.fulfill()
             }
             counter += 1

@@ -56,23 +56,37 @@ class ViewModel {
             .last else { return }
         
         if operators.contains(lastCharacter.description) {
-            print("ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Un opérateur à déjà été saisi", okTitle: "D'accord")))
+            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de mettre 2 opérateurs à la suite", okTitle: "D'accord")))
             return
         }
         if `operator` == "=" {
             processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
+        } else if temporaryText.components(separatedBy: .whitespaces).contains(operators[0]) ||
+            temporaryText.components(separatedBy: .whitespaces).contains(operators[1]) ||
+            temporaryText.components(separatedBy: .whitespaces).contains(operators[2]) ||
+            temporaryText.components(separatedBy: .whitespaces).contains(operators[3]) {
+            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
+            temporaryText += " \(`operator`) "
+            return
         } else {
             temporaryText += " \(`operator`) "
         }
     }
-    
+
     func didPressOperand(with index: Int) {
+        ///////////////////////////////
+        guard temporaryText.count <= 9 else { return }
+        //////////////////////////////
         guard index < operands.count else { return }
         let operand = operands[index]
-        temporaryText += "\(operand)"
+        if temporaryText.last?.description == "/" && operand == 0 {
+            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de diviser par Zero !", okTitle: "D'accord")))
+            return
+        } else {
+            temporaryText += "\(operand)"
+        }
     }
-    
+
     func didPressAc() {
        temporaryText = ""
     }
@@ -97,13 +111,14 @@ class ViewModel {
 
         result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
     }
-    
+
     private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
         
         var operationsToReduce = operationsToReduce
         
+        
         while operationsToReduce.count > 1 {
-
+            
             let result: Int
             switch operand.description {
             case "+": result = left + right
@@ -112,14 +127,13 @@ class ViewModel {
             case "/": result = left / right
             default: fatalError("Unknown operator !")
             }
+            
             operationsToReduce = Array(operationsToReduce.dropFirst(3))
             operationsToReduce.insert("\(result)", at: 0)
-            
         }
         
         guard let operationToReduceFirst = operationsToReduce.first else { return }
-        temporaryText.append(" = \(operationToReduceFirst)")
-
+        temporaryText = "\(operationToReduceFirst)"
     }
 }
 
