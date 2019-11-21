@@ -118,15 +118,59 @@ final class ViewModelTests: XCTestCase {
     
     // MARK: - Division
     
-    func testGivenAViewModel_WhenPressEqualAfterAnDivisionWithIndex0_ThenDisplayedText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenPressEqualAfterAnDivisionWithIndex1_ThenDisplayedText_IsCorrectlyReturned() {
+          let viewModel = ViewModel()
+          let expectation = self.expectation(description: "Division text returned")
+          
+          var counter = 0
+          viewModel.displayedText = { text in
+              if counter == 4 {
+                    XCTAssertEqual(text, "1")
+                    expectation.fulfill()
+              }
+              counter += 1
+          }
+
+          viewModel.viewDidLoad()
+          viewModel.didPressOperand(with: 1)
+          viewModel.didPressOperator(at: 3)
+          viewModel.didPressOperand(with: 1)
+          viewModel.didPressOperator(at: 4)
+
+          waitForExpectations(timeout: 1.0, handler: nil)
+      }
+    
+    func testGivenAViewModel_WhenPressOperatorInsteadOfEqual_ThenDisplayedText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Division text returned")
-        let alertExpectation = self.expectation(description: "Returned alert")
+        let expectation = self.expectation(description: "Press operator instead of equal text returned")
         
         var counter = 0
         viewModel.displayedText = { text in
             if counter == 4 {
-                XCTAssertEqual(text, "0")
+                  XCTAssertEqual(text, "2")
+                  expectation.fulfill()
+            }
+            counter += 1
+        }
+
+        viewModel.viewDidLoad()
+        viewModel.didPressOperand(with: 1)
+        viewModel.didPressOperator(at: 0)
+        viewModel.didPressOperand(with: 1)
+        viewModel.didPressOperator(at: 0)
+
+        waitForExpectations(timeout: 1.0, handler: nil)
+    }
+    
+    func testGivenAViewModel_WhenPressEqualAfterAnDivisionWithIndex0_ThenDisplayedText_IsCorrectlyReturned() {
+        let viewModel = ViewModel()
+        let expectation = self.expectation(description: "Division by zero text returned")
+        let alertExpectation = self.expectation(description: "Returned alert")
+        
+        var counter = 0
+        viewModel.displayedText = { text in
+            if counter == 2 {
+                XCTAssertEqual(text, "0 / ")
                 expectation.fulfill()
                 
             }
@@ -134,8 +178,8 @@ final class ViewModelTests: XCTestCase {
         }
 
         let expectedConfiguration = AlertConfiguration(title: "Attention",
-                                                       message: "Division par zéro interdite",
-                                                       okTitle: "ok")
+                                                       message: "Interdiction de diviser par Zero !",
+                                                       okTitle: "D'accord")
         viewModel.navigateTo = { screen in
             XCTAssertEqual(screen, ViewModel.NextScreen.alert(alertConfiguration: expectedConfiguration))
             alertExpectation.fulfill()
@@ -147,42 +191,19 @@ final class ViewModelTests: XCTestCase {
         viewModel.didPressOperand(with: 0)
         viewModel.didPressOperator(at: 3)
         viewModel.didPressOperand(with: 0)
-        viewModel.didPressOperator(at: 4)
-
-        waitForExpectations(timeout: 1.0, handler: nil)
-    }
-    
-    func testGivenAViewModel_WhenPressEqualAfterAnDivisionWithIndex1_ThenDisplayedText_IsCorrectlyReturned() {
-        let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Division text returned")
-        
-        var counter = 0
-        viewModel.displayedText = { text in
-            if counter == 4 {
-                  XCTAssertEqual(text, "1")
-                  expectation.fulfill()
-            }
-            counter += 1
-        }
-
-        viewModel.viewDidLoad()
-        viewModel.didPressOperand(with: 1)
-        viewModel.didPressOperator(at: 3)
-        viewModel.didPressOperand(with: 1)
-        viewModel.didPressOperator(at: 4)
 
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
     func testGivenAViewModel_WhenPress2TimeAnOperator_ThenDisplayedTextAndAlertConfiguration_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Addition text returned")
+        let expectation = self.expectation(description: "Double operator text returned")
         let alertExpectation = self.expectation(description: "Returned alert")
         
         var counter = 0
         viewModel.displayedText = { text in
-            if counter == 4 {
-                  XCTAssertEqual(text, "1")
+            if counter == 2 {
+                  XCTAssertEqual(text, "1 / ")
                   expectation.fulfill()
             }
             counter += 1
@@ -190,7 +211,7 @@ final class ViewModelTests: XCTestCase {
         
         let expectedConfiguration = AlertConfiguration(title: "Attention",
                                                        message: "Interdiction de mettre 2 opérateurs à la suite",
-                                                       okTitle: "ok")
+                                                       okTitle: "D'accord")
         viewModel.navigateTo = { screen in
             XCTAssertEqual(screen, ViewModel.NextScreen.alert(alertConfiguration: expectedConfiguration))
             alertExpectation.fulfill()
@@ -199,7 +220,6 @@ final class ViewModelTests: XCTestCase {
         viewModel.viewDidLoad()
         viewModel.didPressOperand(with: 1)
         viewModel.didPressOperator(at: 3)
-        viewModel.didPressOperand(with: 1)
         viewModel.didPressOperator(at: 4)
 
         waitForExpectations(timeout: 1.0, handler: nil)

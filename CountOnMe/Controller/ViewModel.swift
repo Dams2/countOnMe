@@ -54,60 +54,62 @@ class ViewModel {
             .components(separatedBy: .whitespaces)
             .joined()
             .last else { return }
-        
-        if operators.contains(lastCharacter.description) {
-            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de mettre 2 opérateurs à la suite", okTitle: "D'accord")))
-            return
-        }
-        if `operator` == "=" {
-            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
-        } else if temporaryText.components(separatedBy: .whitespaces).contains(operators[0]) ||
-            temporaryText.components(separatedBy: .whitespaces).contains(operators[1]) ||
-            temporaryText.components(separatedBy: .whitespaces).contains(operators[2]) ||
-            temporaryText.components(separatedBy: .whitespaces).contains(operators[3]) {
-            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
-            temporaryText += " \(`operator`) "
-            return
-        } else {
-            temporaryText += " \(`operator`) "
-        }
+
+        operatorsSetting(lastCharacter: lastCharacter.description, operator: `operator`)
     }
 
     func didPressOperand(with index: Int) {
-        ///////////////////////////////
-        guard temporaryText.count <= 9 else { return }
-        //////////////////////////////
+        guard let firstElement = temporaryText.components(separatedBy: .whitespaces).first else { return }
+        guard let lastElement = temporaryText.components(separatedBy: .whitespaces).last else { return }
+
+        guard firstElement.count <= 9 || lastElement.count <= 9 else { return }
+        
         guard index < operands.count else { return }
         let operand = operands[index]
-        if temporaryText.last?.description == "/" && operand == 0 {
-            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de diviser par Zero !", okTitle: "D'accord")))
-            return
-        } else {
-            temporaryText += "\(operand)"
-        }
+
+        operandsSettings(operand: operand)
     }
 
     func didPressAc() {
        temporaryText = ""
     }
 
-    // MARK: - Private func
+    // MARK: - Private functions
+
+    private func operatorsSetting(lastCharacter: String, operator: String) {
+        if operators.contains(lastCharacter) {
+           alertFor(multipleOperators: true, divisionByZero: false)
+           return
+        } else if `operator` == "=" {
+            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
+        } else {
+            processCalculIfYouAddAnotherOperator(operator: `operator`)
+        }
+    }
+
+    private func alertFor(multipleOperators: Bool, divisionByZero: Bool) {
+        if multipleOperators == true {
+            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de mettre 2 opérateurs à la suite", okTitle: "D'accord")))
+        }
+        if divisionByZero == true {
+            self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de diviser par Zero !", okTitle: "D'accord")))
+        }
+    }
 
     private func processCalcul(operationsToReduce: [String]) {
-
-            guard
-                let firstElement = operationsToReduce.first,
-                let left = Int(firstElement)
-                else { return }
-            
-            guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstElement.description) else { return }
-            let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
-            let operand = operationsToReduce[operandIndex]
-            
-            guard
-                let lastElement = operationsToReduce.last,
-                let right = Int(lastElement)
-                else { return }
+        guard
+            let firstElement = operationsToReduce.first,
+            let left = Int(firstElement)
+            else { return }
+        
+        guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstElement.description) else { return }
+        let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
+        let operand = operationsToReduce[operandIndex]
+        
+        guard
+            let lastElement = operationsToReduce.last,
+            let right = Int(lastElement)
+            else { return }
 
         result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
     }
@@ -115,10 +117,9 @@ class ViewModel {
     private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
         
         var operationsToReduce = operationsToReduce
-        
-        
+
         while operationsToReduce.count > 1 {
-            
+
             let result: Int
             switch operand.description {
             case "+": result = left + right
@@ -130,10 +131,29 @@ class ViewModel {
             
             operationsToReduce = Array(operationsToReduce.dropFirst(3))
             operationsToReduce.insert("\(result)", at: 0)
+            
         }
-        
         guard let operationToReduceFirst = operationsToReduce.first else { return }
         temporaryText = "\(operationToReduceFirst)"
+    }
+    
+    private func processCalculIfYouAddAnotherOperator(operator: String) {
+        if temporaryText.components(separatedBy: .whitespaces).contains(`operator`) {
+            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
+            temporaryText += " \(`operator`) "
+            return
+       } else {
+            temporaryText += " \(`operator`) "
+        }
+    }
+
+    private func operandsSettings(operand: Int) {
+        if temporaryText.components(separatedBy: .whitespaces).joined().last == "/" && operand == 0 {
+            alertFor(multipleOperators: false, divisionByZero: true)
+            return
+        } else {
+            temporaryText += "\(operand)"
+        }
     }
 }
 
