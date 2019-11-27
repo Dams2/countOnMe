@@ -46,21 +46,22 @@ class ViewModel {
         temporaryText = ""
     }
 
+    let helper = Helper()
+    
     func didPressOperator(at index: Int) {
         guard index < operators.count else { return }
         let `operator` = operators[index]
     
-        guard let lastCharacter = temporaryText
-            .components(separatedBy: .whitespaces)
-            .joined()
-            .last else { return }
-
-        operatorsSetting(lastCharacter: lastCharacter.description, operator: `operator`)
+        if let text = helper.validateLastElement(in: temporaryText) {
+            operatorsSetting(lastCharacter: text, operator: `operator`)
+        }
     }
+    
+    
 
     func didPressOperand(with index: Int) {
         guard let firstElement = temporaryText.components(separatedBy: .whitespaces).first else { return }
-        guard let lastElement = temporaryText.components(separatedBy: .whitespaces).last else { return }
+        guard let lastElement = helper.validateLastElement(in: temporaryText) else { return }
 
         guard firstElement.count <= 9 || lastElement.count <= 9 else { return }
         
@@ -95,17 +96,34 @@ class ViewModel {
             self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de diviser par Zero !", okTitle: "D'accord")))
         }
     }
+    
+    
 
     private func processCalcul(operationsToReduce: [String]) {
-        guard
-            let firstElement = operationsToReduce.first,
-            let left = Int(firstElement)
-            else { return }
         
-        guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstElement.description) else { return }
+//        if let firstCharacter = helper.validateFirstElement(in: temporaryText), let lastCharacter = helper.validateLastElement(in: temporaryText) {
+//            
+//            let left = Int(firstCharacter)!
+//            
+//            guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstCharacter) else { return }
+//            let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
+//            let operand = operationsToReduce[operandIndex]
+//            
+//            let right = Int(lastCharacter)!
+//            
+//            result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
+//        }
+        
+        guard
+            let firstCharacter = operationsToReduce
+                .first,
+                let left = Int(firstCharacter)
+            else { return }
+            
+        guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstCharacter) else { return }
         let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
         let operand = operationsToReduce[operandIndex]
-        
+
         guard
             let lastElement = operationsToReduce.last,
             let right = Int(lastElement)
@@ -113,32 +131,28 @@ class ViewModel {
 
         result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
     }
-
+    
+    private let calculatorFactory = CalculatorFactory()
+    
     private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
         
         var operationsToReduce = operationsToReduce
 
         while operationsToReduce.count > 1 {
-
-            let result: Int
-            switch operand.description {
-            case "+": result = left + right
-            case "-": result = left - right
-            case "*": result = left * right
-            case "/": result = left / right
-            default: fatalError("Unknown operator !")
+            if let result = calculatorFactory.processCalcul(left: left, operand: operand, right: right) {
+                operationsToReduce = Array(operationsToReduce.dropFirst(3))
+                operationsToReduce.insert("\(result)", at: 0)
             }
-            
-            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-            operationsToReduce.insert("\(result)", at: 0)
-            
         }
-        guard let operationToReduceFirst = operationsToReduce.first else { return }
-        temporaryText = "\(operationToReduceFirst)"
+        if let operationToReduceFirst = operationsToReduce.first {
+            temporaryText = "\(operationToReduceFirst)"
+        }
     }
     
     private func processCalculIfYouAddAnotherOperator(operator: String) {
-        if temporaryText.components(separatedBy: .whitespaces).contains(`operator`) {
+        let commonElements = operators.filter { temporaryText.components(separatedBy: .whitespaces).contains($0) }
+
+        if !commonElements.isEmpty {
             processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
             temporaryText += " \(`operator`) "
             return
