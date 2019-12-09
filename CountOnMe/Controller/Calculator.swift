@@ -1,5 +1,5 @@
 //
-//  CalculatorFactory.swift
+//  Calculator.swift
 //  CountOnMe
 //
 //  Created by Damien Rojo on 27.11.19.
@@ -8,9 +8,7 @@
 
 import Foundation
 
-final class CalculatorFactory {
-    
-    
+final class Calculator {
     
     func processCalcul(left: Int, operand: String, right: Int) -> String? {
         switch operand {

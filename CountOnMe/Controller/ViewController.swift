@@ -8,15 +8,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
     // MARK: - Outlets
     
     @IBOutlet private weak var textView: UITextView!
-    @IBOutlet private var numberButtons: [UIButton]!
-    @IBOutlet private weak var acButton: UIButton!
-    
-    @IBOutlet var operators: [UIButton]!
     
     // MARK: - Private properties
 
@@ -37,8 +33,7 @@ class ViewController: UIViewController {
         }
 
         viewModel.navigateTo = { [weak self] screen in
-            switch screen {
-            case .alert(alertConfiguration: let configuration):
+            if case .alert(alertConfiguration: let configuration) = screen {
                 self?.displayAlert(with: configuration)
             }
         }
@@ -54,18 +49,17 @@ class ViewController: UIViewController {
     
     // MARK: - Action
 
-    @IBAction private func pressOperand(_ sender: UIButton) {
+    @IBAction private func pressOperator(_ sender: UIButton) {
         let index = sender.tag
         viewModel.didPressOperator(at: index)
-        
     }
 
-    @IBAction private func tappedNumberButton(_ sender: UIButton) {
+    @IBAction private func pressOperand(_ sender: UIButton) {
         let index = sender.tag
         viewModel.didPressOperand(with: index)
     }
 
-    @IBAction private func tappedAcButton(_ sender: UIButton) {
+    @IBAction private func pressClear(_ sender: UIButton) {
         viewModel.didPressAc()
     }
 }

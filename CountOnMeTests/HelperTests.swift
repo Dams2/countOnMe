@@ -11,7 +11,43 @@ import XCTest
 
 final class HelperTests: XCTestCase {
     
-    func testGivenAHelper_WhenvalidateLastJoinedElement_ThenReturnIsNotEmpty_IsCorrectlyReturned() {
+    func testGivenAHelper_WhenValidateIndex_ThenReturnIsNotEmpty_IsCorrectlyReturned() {
+        
+        let helper = Helper()
+        
+        let result = helper.validateIndex(index: 1, count: 2)
+        
+        XCTAssertNotNil(result)
+    }
+    
+    func testGivenAHelper_WhenValidateIndex_ThenReturnIsNil_IsCorrectlyReturned() {
+        
+        let helper = Helper()
+        
+        let result = helper.validateIndex(index: 3, count: 2)
+        
+        XCTAssertNil(result)
+    }
+    
+    func testGivenAHelper_WhenValidateFirstElement_ThenReturnIsNotEmpty_IsCorrectlyReturned()  {
+        
+        let helper = Helper()
+        
+        let result = helper.validateFirstElement(in: "t")
+        
+        XCTAssertNotNil(result)
+    }
+    
+    func testGivenAHelper_WhenValidateFirstElement_ThenReturnIsEmpty_IsCorrectlyReturned() {
+        
+        let helper = Helper()
+        
+        let result = helper.validateFirstElement(in: "")
+        
+        XCTAssertEqual(result, "")
+    }
+    
+    func testGivenAHelper_WhenValidateLastJoinedElement_ThenReturnIsNotEmpty_IsCorrectlyReturned() {
         
         let helper = Helper()
         
@@ -20,7 +56,7 @@ final class HelperTests: XCTestCase {
         XCTAssertNotNil(result)
     }
 
-    func testGivenAHelper_WhenvalidateLastJoinedElement_ThenReturnIsNil_IsCorrectlyReturned() {
+    func testGivenAHelper_WhenValidateLastJoinedElement_ThenReturnIsEmpty_IsCorrectlyReturned() {
         
         let helper = Helper()
         
@@ -29,7 +65,7 @@ final class HelperTests: XCTestCase {
         XCTAssertNil(result)
     }
     
-    func testGivenAHelper_WhenvalidateLastElement_ThenReturnIsNotEmpty_IsCorrectlyReturned() {
+    func testGivenAHelper_WhenValidateLastElement_ThenReturnIsNotEmpty_IsCorrectlyReturned() {
         
         let helper = Helper()
          let result = helper.validateLastElement(in: "T")
@@ -37,7 +73,7 @@ final class HelperTests: XCTestCase {
          XCTAssertNotNil(result)
     }
     
-    func testGivenAHelper_WhenvalidateLastElement_ThenReturnIsNil_IsCorrectlyReturned() {
+    func testGivenAHelper_WhenValidateLastElement_ThenReturnIsEmpty_IsCorrectlyReturned() {
         
         let helper = Helper()
         let result = helper.validateLastElement(in: "")

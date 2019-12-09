@@ -14,13 +14,17 @@ struct AlertConfiguration: Equatable {
     let okTitle: String
 }
 
-class ViewModel {
+final class ViewModel {
 
     // MARK: - Private Properties
 
     private let operators: [String] = ["+", "-", "*", "/", "="]
-    
+
     private let operands: [Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+    private let helper = Helper()
+
+    private let calculatorFactory = Calculator()
 
     private var temporaryText: String = "" {
         didSet {
@@ -29,9 +33,9 @@ class ViewModel {
             displayedText?(text.joined(separator: " "))
         }
     }
-    
+
     // MARK: - Outputs
-    
+
     var displayedText: ((String) -> Void)?
 
     var navigateTo: ((NextScreen) -> Void)?
@@ -39,36 +43,32 @@ class ViewModel {
     enum NextScreen {
         case alert(alertConfiguration: AlertConfiguration)
     }
-    
+
     // MARK: - Inputs
-    
+
     func viewDidLoad() {
         temporaryText = ""
     }
 
-    let helper = Helper()
-    
     func didPressOperator(at index: Int) {
-        guard index < operators.count else { return }
-        let `operator` = operators[index]
-    
-        if let text = helper.validateLastElement(in: temporaryText) {
-            operatorsSetting(lastCharacter: text, operator: `operator`)
+        if let validateIndex = helper.validateIndex(index: index, count: operators.count) {
+            let `operator` = operators[validateIndex]
+          
+            if let text = helper.validateLastJoinedElement(in: temporaryText) {
+                operatorsSetting(lastCharacter: text, operator: `operator`)
+            }
         }
     }
-    
-    
 
     func didPressOperand(with index: Int) {
-        guard let firstElement = temporaryText.components(separatedBy: .whitespaces).first else { return }
-        guard let lastElement = helper.validateLastElement(in: temporaryText) else { return }
-
-        guard firstElement.count <= 9 || lastElement.count <= 9 else { return }
-        
-        guard index < operands.count else { return }
-        let operand = operands[index]
-
-        operandsSettings(operand: operand)
+        if let firstElement = helper.validateFirstElement(in: temporaryText), let lastElement = helper.validateLastElement(in: temporaryText) {
+            if firstElement.count <= 9 || lastElement.count <= 9 {
+                if let validateIndex = helper.validateIndex(index: index, count: operands.count) {
+                    let operand = operands[validateIndex]
+                    operandsSettings(operand: operand)
+                }
+            }
+        }
     }
 
     func didPressAc() {
@@ -96,46 +96,25 @@ class ViewModel {
             self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de diviser par Zero !", okTitle: "D'accord")))
         }
     }
-    
-    
 
     private func processCalcul(operationsToReduce: [String]) {
-        
-//        if let firstCharacter = helper.validateFirstElement(in: temporaryText), let lastCharacter = helper.validateLastElement(in: temporaryText) {
-//            
-//            let left = Int(firstCharacter)!
-//            
-//            guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstCharacter) else { return }
-//            let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
-//            let operand = operationsToReduce[operandIndex]
-//            
-//            let right = Int(lastCharacter)!
-//            
-//            result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
-//        }
-        
-        guard
-            let firstCharacter = operationsToReduce
-                .first,
-                let left = Int(firstCharacter)
-            else { return }
-            
-        guard let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstCharacter) else { return }
-        let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
-        let operand = operationsToReduce[operandIndex]
+        if operationsToReduce.count == 3 {
+            if let firstCharacter = helper.validateFirstElement(in: temporaryText), let lastCharacter = helper.validateLastElement(in: temporaryText) {
+                
+                if let left = helper.convertFirstElementIntoInt(firstCharacter: firstCharacter), let right = helper.convertLastElementIntoInt(lastCharacter: lastCharacter) {
 
-        guard
-            let lastElement = operationsToReduce.last,
-            let right = Int(lastElement)
-            else { return }
-
-        result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
+                    if let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstCharacter) {
+                        let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
+                        let operand = operationsToReduce[operandIndex]
+                        result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
+                    }
+                }
+            }
+        }
     }
-    
-    private let calculatorFactory = CalculatorFactory()
-    
-    private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
         
+    private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
+
         var operationsToReduce = operationsToReduce
 
         while operationsToReduce.count > 1 {
@@ -148,7 +127,7 @@ class ViewModel {
             temporaryText = "\(operationToReduceFirst)"
         }
     }
-    
+
     private func processCalculIfYouAddAnotherOperator(operator: String) {
         let commonElements = operators.filter { temporaryText.components(separatedBy: .whitespaces).contains($0) }
 
