@@ -38,7 +38,7 @@ final class ViewController: UIViewController {
             }
         }
     }
-    
+
     // MARK: - Helpers
 
     private func displayAlert(with configuration: AlertConfiguration) {
@@ -46,7 +46,7 @@ final class ViewController: UIViewController {
         alertVC.addAction(UIAlertAction(title: configuration.okTitle, style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
     }
-    
+
     // MARK: - Action
 
     @IBAction private func pressOperator(_ sender: UIButton) {

@@ -66,9 +66,9 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGivenAViewModel_WhenDidPressOperand_ThenDisplayedText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenDidPressOperand10Times_ThenDisplayedText_IsCorrectlyReturned() {
         let viewModel = ViewModel()
-        let expectation = self.expectation(description: "first and last element count less than 9")
+        let expectation = self.expectation(description: "first and last element count limited at 10")
         
         var counter = 0
         viewModel.displayedText = { text in
@@ -129,7 +129,7 @@ final class ViewModelTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGivenAViewModel_WhenPressEqualAfterAnDivisionWithIndex0_ThenDisplayedText_IsCorrectlyReturned() {
+    func testGivenAViewModel_WhenDivisionBy0_ThenDisplayedTextAndAlerteConfiguartion_IsCorrectlyReturned() {
         let viewModel = ViewModel()
         let expectation = self.expectation(description: "Division by zero text returned")
         let alertExpectation = self.expectation(description: "Returned alert")

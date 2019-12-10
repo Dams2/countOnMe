@@ -10,6 +10,11 @@ import Foundation
 
 final class Calculator {
     
+    /// Manages the calculation with the operand between the element of left and the element of right
+    /// - Parameters:
+    ///   - left: Number of the left
+    ///   - operand: Operator
+    ///   - right: Number of the right
     func processCalcul(left: Int, operand: String, right: Int) -> String? {
         switch operand {
         case "+": return "\(left + right)"

@@ -35,21 +35,27 @@ final class ViewModel {
     }
 
     // MARK: - Outputs
-
+    
+    /// Return the text to be displayed
     var displayedText: ((String) -> Void)?
 
+    /// Return the screen to be displayed
     var navigateTo: ((NextScreen) -> Void)?
 
+    /// Handle the list of screen which can be displayed
     enum NextScreen {
         case alert(alertConfiguration: AlertConfiguration)
     }
 
     // MARK: - Inputs
-
+    
+    /// Handle the view did load event
     func viewDidLoad() {
         temporaryText = ""
     }
-
+    
+    /// Handle the event when an operator is pressed
+    /// - Parameter index: The index of the pressed operator.
     func didPressOperator(at index: Int) {
         if let validateIndex = helper.validateIndex(index: index, count: operators.count) {
             let `operator` = operators[validateIndex]
@@ -59,7 +65,9 @@ final class ViewModel {
             }
         }
     }
-
+    
+    /// Handle the event when an operand is pressed
+    /// - Parameter index: The index of the pressed operand.
     func didPressOperand(with index: Int) {
         if let firstElement = helper.validateFirstElement(in: temporaryText), let lastElement = helper.validateLastElement(in: temporaryText) {
             if firstElement.count <= 9 || lastElement.count <= 9 {
@@ -112,7 +120,7 @@ final class ViewModel {
             }
         }
     }
-        
+
     private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
 
         var operationsToReduce = operationsToReduce
