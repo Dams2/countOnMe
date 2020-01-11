@@ -106,28 +106,6 @@ final class ViewModelTests: XCTestCase {
         
         waitForExpectations(timeout: 1.0, handler: nil)
     }
-
-    func testGivenAViewModel_WhenPressOperatorInsteadOfEqual_ThenDisplayedText_IsCorrectlyReturned() {
-        let viewModel = ViewModel()
-        let expectation = self.expectation(description: "Press operator instead of equal text returned")
-        
-        var counter = 0
-        viewModel.displayedText = { text in
-            if counter == 4 {
-                  XCTAssertEqual(text, "2")
-                  expectation.fulfill()
-            }
-            counter += 1
-        }
-
-        viewModel.viewDidLoad()
-        viewModel.didPressOperand(with: 1)
-        viewModel.didPressOperator(at: 0)
-        viewModel.didPressOperand(with: 1)
-        viewModel.didPressOperator(at: 0)
-
-        waitForExpectations(timeout: 1.0, handler: nil)
-    }
     
     func testGivenAViewModel_WhenDivisionBy0_ThenDisplayedTextAndAlerteConfiguartion_IsCorrectlyReturned() {
         let viewModel = ViewModel()

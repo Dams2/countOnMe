@@ -10,20 +10,6 @@ import Foundation
 
 final class Helper {
 
-    /// Convert the String element to an Int and return it
-    /// - Parameter firstCharacter: First component String element
-    func convertFirstElementIntoInt(firstCharacter: String) -> Int? {
-        guard let left = Int(firstCharacter) else { return nil }
-        return left
-    }
-
-    /// Convert the String element to an Int return it
-    /// - Parameter lastCharacter: Last component String element
-    func convertLastElementIntoInt(lastCharacter: String) -> Int? {
-        guard let right = Int(lastCharacter) else { return nil }
-        return right
-    }
-
     /// Return an Int index if it is smaller than count
     /// - Parameters:
     ///   - index: Pressed index
@@ -31,6 +17,11 @@ final class Helper {
     func validateIndex(index: Int, count: Int) -> Int? {
         guard index < count else { return nil }
         return index
+    }
+    
+    func operatorIndex(operationsToReduce: String) -> String.Index? {
+        guard let operatorIndex = operationsToReduce.firstIndex(where: { $0 == "*" || $0 == "/"}) else { return nil }
+        return operatorIndex
     }
 
     /// Return the first component String
