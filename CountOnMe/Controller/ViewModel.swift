@@ -35,7 +35,7 @@ final class ViewModel {
     }
 
     // MARK: - Outputs
-    
+
     /// Return the text to be displayed
     var displayedText: ((String) -> Void)?
 
@@ -80,19 +80,25 @@ final class ViewModel {
     }
 
     func didPressAc() {
-       temporaryText = ""
+        temporaryText = ""
     }
 
     // MARK: - Private functions
 
     private func operatorsSetting(lastCharacter: String, operator: String) {
-        if operators.contains(lastCharacter) {
-           alertFor(multipleOperators: true, divisionByZero: false)
-           return
-        } else if `operator` == "=" {
-            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
-        } else {
-            processCalculIfYouAddAnotherOperator(operator: `operator`)
+//        if operators.contains(lastCharacter) {
+//           alertFor(multipleOperators: true, divisionByZero: false)
+//           return
+//        } else if `operator` == "=" {
+//            calcul()
+//        } else if `operator` != "="{
+//            temporaryText += " \(`operator`) "
+//        }
+        
+         temporaryText += " \(`operator`) "
+
+        if temporaryText.components(separatedBy: .whitespaces).contains("=") {
+            calcul()
         }
     }
 
@@ -104,48 +110,68 @@ final class ViewModel {
             self.navigateTo?(.alert(alertConfiguration: AlertConfiguration(title: "Attention", message: "Interdiction de diviser par Zero !", okTitle: "D'accord")))
         }
     }
+    
+    private func calcul() {
+        var operationsToReduce = temporaryText.components(separatedBy: .whitespaces)
+        
+        repeat {
+            guard let operatorIndex = operationsToReduce.firstIndex(where: { $0 == "*" || $0 == "/"}) else { return }
+            let beforeIndex = operationsToReduce.index(before: operatorIndex)
+            let afterIndex = operationsToReduce.index(after: operatorIndex)
+            guard let firstElement = Int(operationsToReduce[beforeIndex]) else { return }
+            let operatorElement = operationsToReduce[operatorIndex]
+            guard let secondElement = Int(operationsToReduce[afterIndex]) else { return }
+                        
+    
+            if let result = calculatorFactory.processCalcul(left: firstElement, operand: operatorElement, right: secondElement) {
 
-    private func processCalcul(operationsToReduce: [String]) {
-        if operationsToReduce.count == 3 {
-            if let firstCharacter = helper.validateFirstElement(in: temporaryText), let lastCharacter = helper.validateLastElement(in: temporaryText) {
+                print("eekwdljflkwjndaslfhjsadlkhjfdlkjsahlkfjshlkfhslkjhfdsalkjhfsklhdsha")
+
+                operationsToReduce.insert(result, at: beforeIndex)
+                print(operationsToReduce)
+                print("21837981782379717391389")
+
+                operationsToReduce.removeSubrange(beforeIndex+1...afterIndex+1)
+                print("jsadnkjnfdkjwan")
+                print(operationsToReduce)
                 
-                if let left = helper.convertFirstElementIntoInt(firstCharacter: firstCharacter), let right = helper.convertLastElementIntoInt(lastCharacter: lastCharacter) {
-
-                    if let operationsToReduceFirstIndex = operationsToReduce.firstIndex(of: firstCharacter) {
-                        let operandIndex = operationsToReduce.index(after: operationsToReduceFirstIndex)
-                        let operand = operationsToReduce[operandIndex]
-                        result(left: left, operand: operand, right: right, operationsToReduce: operationsToReduce)
-                    }
-                }
             }
-        }
-    }
+        } while operationsToReduce.contains("*") || operationsToReduce.contains("/")
+        
+        print("---------------------------------------------------------")
 
-    private func result(left: Int, operand: String, right: Int, operationsToReduce: [String]) {
-
-        var operationsToReduce = operationsToReduce
-
-        while operationsToReduce.count > 1 {
-            if let result = calculatorFactory.processCalcul(left: left, operand: operand, right: right) {
-                operationsToReduce = Array(operationsToReduce.dropFirst(3))
-                operationsToReduce.insert("\(result)", at: 0)
+        repeat {
+            print("kwmdlfma")
+            guard let operatorIndex = operationsToReduce.firstIndex(where: { $0 == "+" || $0 == "-"}) else { return }
+            print("11")
+            let beforeIndex = operationsToReduce.index(before: operatorIndex)
+            let afterIndex = operationsToReduce.index(after: operatorIndex)
+            guard let firstElement = Int(operationsToReduce[beforeIndex]) else { return }
+            let operatorElement = operationsToReduce[operatorIndex]
+            guard let secondElement = Int(operationsToReduce[afterIndex]) else { return }
+                
+            if let result = calculatorFactory.processCalcul(left: firstElement, operand: operatorElement, right: secondElement) {
+                print("\n\njsadnkjnfdkjwan")
+                print(operationsToReduce)
+                operationsToReduce.insert(result, at: beforeIndex)
+                print("\n\n1982371298743927498312798371982749837891327983791728473298321")
+                print(operationsToReduce)
+                operationsToReduce.removeSubrange(beforeIndex+1...afterIndex+1)
+                print("\n\nsdakpoKéLKaélklkaFJéLKKJASFJKHADSKJHFKJDSHAKLJHSDFKJHDASKJHKSDH")
+                print(operationsToReduce)
             }
-        }
-        if let operationToReduceFirst = operationsToReduce.first {
-            temporaryText = "\(operationToReduceFirst)"
-        }
-    }
-
-    private func processCalculIfYouAddAnotherOperator(operator: String) {
-        let commonElements = operators.filter { temporaryText.components(separatedBy: .whitespaces).contains($0) }
-
-        if !commonElements.isEmpty {
-            processCalcul(operationsToReduce: temporaryText.components(separatedBy: .whitespaces))
-            temporaryText += " \(`operator`) "
-            return
-       } else {
-            temporaryText += " \(`operator`) "
-        }
+            
+        } while operationsToReduce.count >= 3
+        
+        operationsToReduce.removeLast()
+        print(operationsToReduce)
+        print("---------------------------------------------------------")
+        temporaryText = ""
+        print(temporaryText)
+        print("sdlé,awélm,élfa----------")
+    
+        temporaryText = "\(operationsToReduce)"
+        print(temporaryText)
     }
 
     private func operandsSettings(operand: Int) {

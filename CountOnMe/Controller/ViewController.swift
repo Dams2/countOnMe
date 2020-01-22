@@ -13,7 +13,7 @@ final class ViewController: UIViewController {
     // MARK: - Outlets
     
     @IBOutlet private weak var textView: UITextView!
-    
+
     // MARK: - Private properties
 
     private lazy var viewModel = ViewModel()
